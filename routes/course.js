@@ -35,4 +35,15 @@ router.post('/', (req, res) => {
   });
 });
 
+router.put('/', (req, res) => {
+  const { courseName, notes, courseId } = req.body;
+  Course.findById(courseId, (err, course) => {
+    course.courseName = courseName;
+    course.notes = notes;
+    course.save((err, updatedCourse) => {
+      res.json({updatedCourse});
+    });
+  });
+});
+
 module.exports = router;
