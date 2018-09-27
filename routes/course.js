@@ -6,12 +6,10 @@ var User = require('../models/user');
 var Course = require('../models/course');
 
 router.get('/:id', (req, res) => {
-  console.log('user: ', req.params.id);
   Course.find({userId: req.params.id}, function(err, courses) {
     if (err) {
       console.log(err);
     } else {
-      console.log('courses: ', courses);
       res.json({courses});
     }
   })
@@ -44,6 +42,16 @@ router.put('/', (req, res) => {
       res.json({updatedCourse});
     });
   });
+});
+
+router.delete('/', (req, res) => {
+  Course.findByIdAndRemove(req.body.courseId, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send({msg: 'deleted'});
+    }
+  })
 });
 
 module.exports = router;
