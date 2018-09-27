@@ -27,10 +27,9 @@ app.get('/api', function(req, res) {
   res.send('this is in server.js on backend');
 });
 
-// var index = require('./routes/index');
-// var users = require('./routes/users');
 var auth = require('./routes/auth');
 app.use('/api/auth', auth);
+app.use('/api/course', require('./routes/course'));
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

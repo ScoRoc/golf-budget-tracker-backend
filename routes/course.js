@@ -3,10 +3,25 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = require('../models/user');
-var bcrypt = require('bcrypt');
+var Course = require('../models/course');
 
-var expressJWT = require('express-jwt');
-var jwt = require('jsonwebtoken');
+router.post('/', (req, res) => {
+  const { courseName, notes, user } = req.body;
+  Course.create({
+    courseName,
+    notes,
+    userId: user._id
+  }, function(err, newCourse) {
+    if (err) {
+      console.log("GOT AN ERROR CREATING THE COURSE")
+      console.log(err)
+      res.send(err)
+    } else {
+      console.log('newCourse: ', newCourse);
+      res.json({newCourse});
+    }
+  });
+});
 
 router.post('/login', (req, res, next) => {
   let hashedPass = '';
@@ -63,29 +78,6 @@ router.post('/signup', (req, res, next) => {
   })
 })
 
-router.post('/me/from/token', (req, res, next) => {
-  // Check for presence of a token
-  var token = req.body.token
-  if (!token) {
-    res.status(401).json({message: "Must pass the token"})
-  } else {
-    jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
-      if (err) {
-        res.status(401).send(err)
-      } else {
-        // TODO: Why does the "_id" need to be in quotes?
-        User.findById({
-          '_id': user._id
-        }, function(err, user) {
-          if (err) {
-            res.status(401).send(err)
-          } else {
-            res.json({user, token})
-          }
-        })
-      }
-    })
-  }
-})
+
 
 module.exports = router;
