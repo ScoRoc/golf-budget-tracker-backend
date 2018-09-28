@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var userSchema = new mongoose.Schema({
+var courseSchema = new mongoose.Schema({
   courseName: {
     type: String,
     required: true,
@@ -18,6 +18,6 @@ var userSchema = new mongoose.Schema({
   }
 })
 
-var Course = mongoose.model('Course', userSchema);
+var Course = mongoose.model('Course', courseSchema);
 
 module.exports = Course;
