@@ -56,13 +56,20 @@ router.put('/', (req, res) => {
 });
 
 router.delete('/', (req, res) => {
-  Course.findByIdAndRemove(req.body.courseId, function(err) {
+  const { courseId } = req.body;
+  Teebox.find({courseId}).remove(function(err,) {
     if (err) {
       console.log(err);
     } else {
-      res.send({msg: 'deleted'});
+      Course.findByIdAndRemove(courseId, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send({msg: 'deleted'});
+        }
+      });
     }
-  })
+  });
 });
 
 module.exports = router;
