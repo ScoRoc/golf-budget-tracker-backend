@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var matchSchema = new mongoose.Schema({
+var roundSchema = new mongoose.Schema({
   courseId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
@@ -29,6 +29,6 @@ var matchSchema = new mongoose.Schema({
   }
 })
 
-var Match = mongoose.model('Match', matchSchema);
+var Round = mongoose.model('Round', roundSchema);
 
-module.exports = Match;
+module.exports = Round;

@@ -29,7 +29,7 @@ app.get('/api', function(req, res) {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/course', require('./routes/course'));
-app.use('/api/match', require('./routes/match'));
+app.use('/api/round', require('./routes/round'));
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

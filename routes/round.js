@@ -4,7 +4,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var User = require('../models/user');
 var Course = require('../models/course');
-var Match = require('../models/match');
+var Round = require('../models/round');
 
 // router.get('/:id', (req, res) => {
 //   Course.find({userId: req.params.id}, function(err, courses) {
@@ -18,21 +18,21 @@ var Match = require('../models/match');
 
 router.post('/', (req, res) => {
   const { course, date, score, price, notes, user } = req.body;
-  Match.create({
+  Round.create({
     courseId: course._id,
     date,
     score,
     price,
     notes,
     userId: user._id
-  }, function(err, newMatch) {
+  }, function(err, newRound) {
     if (err) {
       console.log("GOT AN ERROR CREATING THE COURSE")
       console.log(err)
       res.send(err)
     } else {
-      console.log('newMatch: ', newMatch);
-      res.json({newMatch});
+      console.log('newRound: ', newRound);
+      res.json({newRound});
     }
   });
 });
