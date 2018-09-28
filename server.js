@@ -29,6 +29,7 @@ app.get('/api', function(req, res) {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/course', require('./routes/course'));
+app.use('/api/teebox', require('./routes/teebox'));
 app.use('/api/round', require('./routes/round'));
 
 const PORT = process.env.PORT || 3000

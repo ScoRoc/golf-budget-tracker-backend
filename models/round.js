@@ -6,6 +6,11 @@ var roundSchema = new mongoose.Schema({
     ref: 'Course',
     required: true
   },
+  teeboxId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Teebox',
+    required: true
+  },
   date: {
     type: String,
     required: true
