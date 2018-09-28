@@ -7,11 +7,25 @@ var Course = require('../models/course');
 var Teebox = require('../models/teebox');
 
 router.get('/:id', (req, res) => {
-  Course.find({userId: req.params.id}, function(err, courses) {
+  Course.find({userId: req.params.id}).lean().exec(function(err, courses) {
     if (err) {
       console.log(err);
     } else {
-      res.json({courses});
+      Teebox.find({}).lean().exec(function(err, teeboxes) {
+        if (err) {
+          console.log(err);
+        } else {
+          courses.forEach(course => {
+            course.teeboxes = [];
+            teeboxes.forEach(teebox => {
+              if (teebox.courseId.toString() === course._id.toString()) {
+                course.teeboxes.push(teebox);
+              }
+            })
+          });
+        }
+        res.send(courses);
+      });
     }
   })
 });
