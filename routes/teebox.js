@@ -15,26 +15,23 @@ var Teebox = require('../models/teebox');
 //   })
 // });
 
-// router.post('/', (req, res) => {
-//   const { course, date, score, price, notes, user } = req.body;
-//   Round.create({
-//     courseId: course._id,
-//     date,
-//     score,
-//     price,
-//     notes,
-//     userId: user._id
-//   }, function(err, newRound) {
-//     if (err) {
-//       console.log("GOT AN ERROR CREATING THE COURSE")
-//       console.log(err)
-//       res.send(err)
-//     } else {
-//       console.log('newRound: ', newRound);
-//       res.json({newRound});
-//     }
-//   });
-// });
+router.post('/', (req, res) => {
+  const { name, rating, slope, courseId } = req.body;
+  Teebox.create({
+    name,
+    rating,
+    slope,
+    courseId
+  }, function(err, newTeebox) {
+    if (err) {
+      console.log(err)
+      res.send(err)
+    } else {
+      console.log('newTeebox: ', newTeebox);
+      res.json({newTeebox});
+    }
+  });
+});
 
 router.put('/', (req, res) => {
   const { name, rating, slope, id } = req.body;
@@ -48,14 +45,14 @@ router.put('/', (req, res) => {
   });
 });
 
-// router.delete('/', (req, res) => {
-//   Course.findByIdAndRemove(req.body.courseId, function(err) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       res.send({msg: 'deleted'});
-//     }
-//   })
-// });
+router.delete('/', (req, res) => {
+  Teebox.findByIdAndRemove(req.body.id, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send({msg: 'deleted'});
+    }
+  })
+});
 
 module.exports = router;
