@@ -6,15 +6,15 @@ var User = require('../models/user');
 var Course = require('../models/course');
 var Round = require('../models/round');
 
-// router.get('/:id', (req, res) => {
-//   Course.find({userId: req.params.id}, function(err, courses) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       res.json({courses});
-//     }
-//   })
-// });
+router.get('/:id', (req, res) => {
+  Round.find({userId: req.params.id}, function(err, rounds) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({rounds});
+    }
+  })
+});
 
 router.post('/', (req, res) => {
   const { course, date, score, price, notes, user } = req.body;

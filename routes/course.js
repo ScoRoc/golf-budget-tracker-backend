@@ -18,10 +18,10 @@ router.get('/:id', (req, res) => {
           courses.forEach(course => {
             course.teeboxes = [];
             teeboxes.forEach(teebox => {
-              if (teebox.courseId.toString() === course._id.toString()) {
+              if (teebox.courseId.equals(course._id)) {
                 course.teeboxes.push(teebox);
               }
-            })
+            });
           });
         }
         res.send(courses);

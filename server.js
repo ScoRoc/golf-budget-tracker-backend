@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var axios = require('axios');
 
 // Mongoose stuff
 var mongoose = require('mongoose');
@@ -22,15 +23,16 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/api', function(req, res) {
-  console.log('hi from the back');
-  res.send('this is in server.js on backend');
-});
+// app.get('/api', function(req, res) {
+//   console.log('hi from the back');
+//   res.send('this is in server.js on backend');
+// });
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/course', require('./routes/course'));
-app.use('/api/teebox', require('./routes/teebox'));
 app.use('/api/round', require('./routes/round'));
+app.use('/api/teebox', require('./routes/teebox'));
+app.use('/api/user', require('./routes/user'));
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
