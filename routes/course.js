@@ -38,20 +38,20 @@ router.post('/', (req, res) => {
     userId: user._id
   }, function(err, newCourse) {
     if (err) {
-      console.log("GOT AN ERROR CREATING THE COURSE")
-      console.log(err)
-      res.send(err)
+      console.log("GOT AN ERROR CREATING THE COURSE");
+      console.log(err);
+      res.send(err);
     } else {
       teeboxes.forEach(teebox => {
         teebox.courseId = newCourse._id;
       });
       Teebox.create(teeboxes, function(err, newTeeboxes) {
         if (err) {
-          console.log("GOT AN ERROR CREATING THE COURSE")
-          console.log(err)
-          res.send(err)
+          console.log("GOT AN ERROR CREATING THE COURSE");
+          console.log(err);
+          res.send(err);
         } else {
-          res.json({newCourse, newTeeboxes});
+          newTeeboxes ? res.json({newCourse, newTeeboxes}) : res.json({newCourse, newTeeboxes: []});
         }
       })
     }

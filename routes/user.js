@@ -35,7 +35,6 @@ router.get('/:id', (req, res) => {
                 })
               });
             }
-            console.log('courses: ', courses);
             res.send({courses, rounds});
           });
         }

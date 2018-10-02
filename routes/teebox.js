@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
       console.log(err)
       res.send(err)
     } else {
-      console.log('newTeebox: ', newTeebox);
+      // console.log('newTeebox: ', newTeebox);
       res.json({newTeebox});
     }
   });

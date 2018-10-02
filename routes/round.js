@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
       console.log(err)
       res.send(err)
     } else {
-      console.log('newRound: ', newRound);
+      // console.log('newRound: ', newRound);
       res.json({newRound});
     }
   });
