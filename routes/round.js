@@ -17,7 +17,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { course, date, score, price, notes, user } = req.body;
+  const { course, teebox, date, score, price, notes, user } = req.body;
   Round.create({
     courseId: course._id,
     teeboxId: teebox._id,
