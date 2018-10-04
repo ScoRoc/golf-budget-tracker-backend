@@ -8,34 +8,41 @@ var Round = require('../models/round');
 var Teebox = require('../models/teebox');
 
 router.get('/:id', (req, res) => {
-  Course.find({userId: req.params.id}).lean().exec(function(err, courses) {
+  User.findById(req.params.id).lean().exec(function(err, user) {
     if (err) {
       console.log(err);
+      res.send(err);
     } else {
-      Teebox.find({}).lean().exec(function(err, teeboxes) {
+      Course.find({userId: req.params.id}).lean().exec(function(err, courses) {
         if (err) {
           console.log(err);
         } else {
-          Round.find({}).lean().exec(function(err, rounds) {
+          Teebox.find({}).lean().exec(function(err, teeboxes) {
             if (err) {
               console.log(err);
             } else {
-              courses.forEach(course => {
-                course.teeboxes = [];
-                course.rounds = [];
-                teeboxes.forEach(teebox => {
-                  if (teebox.courseId.equals(course._id)) {
-                    course.teeboxes.push(teebox);
-                  }
-                });
-                rounds.forEach(round => {
-                  if (round.courseId.equals(course._id)) {
-                    course.rounds.push(round);
-                  }
-                })
+              Round.find({}).lean().exec(function(err, rounds) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  courses.forEach(course => {
+                    course.teeboxes = [];
+                    course.rounds = [];
+                    teeboxes.forEach(teebox => {
+                      if (teebox.courseId.equals(course._id)) {
+                        course.teeboxes.push(teebox);
+                      }
+                    });
+                    rounds.forEach(round => {
+                      if (round.courseId.equals(course._id)) {
+                        course.rounds.push(round);
+                      }
+                    })
+                  });
+                }
+                res.send({user, courses, rounds});
               });
             }
-            res.send({courses, rounds});
           });
         }
       });

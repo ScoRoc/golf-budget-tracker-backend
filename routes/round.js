@@ -6,7 +6,20 @@ var User = require('../models/user');
 var Course = require('../models/course');
 var Round = require('../models/round');
 
+const calculateHandicap = userId => {
+  User.findById(userId, (err, user) => {
+    console.log('user: ', user);
+    user.handicap = 4;
+    user.save((err, updatedUser) => {
+      if (err) console.log(err);
+    })
+    console.log('user.handicap: ', user.handicap);
+  });
+}
+
 router.get('/:id', (req, res) => {
+  calculateHandicap(req.params.id);
+  console.log('yooooo');
   Round.find({userId: req.params.id}, function(err, rounds) {
     if (err) {
       console.log(err);
@@ -32,13 +45,14 @@ router.post('/', (req, res) => {
       console.log(err)
       res.send(err)
     } else {
+      calculateHandicap(user._id);
       res.json({newRound});
     }
   });
 });
 
 router.put('/', (req, res) => {
-  const { roundId, course, teebox, date, score, price, notes } = req.body;
+  const { user, roundId, course, teebox, date, score, price, notes } = req.body;
   Round.findById(roundId, (err, round) => {
     round.courseId = course._id;
     round.teeboxId = teebox._id;
@@ -47,6 +61,7 @@ router.put('/', (req, res) => {
     round.price = price;
     round.notes = notes;
     round.save((err, updatedRound) => {
+      calculateHandicap(user._id);
       res.json({updatedRound});
     });
   });
@@ -57,6 +72,7 @@ router.delete('/', (req, res) => {
     if (err) {
       console.log(err);
     } else {
+      calculateHandicap(req.body.user._id);
       res.send({msg: 'deleted'});
     }
   });

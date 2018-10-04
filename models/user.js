@@ -20,6 +20,9 @@ var userSchema = new mongoose.Schema({
     required: true,
     minLength: 8,
     maxLength: 99
+  },
+  handicap: {
+    type: Number
   }
 })
 
@@ -45,8 +48,10 @@ userSchema.methods.authenticated = function(password, cb) {
 }
 
 userSchema.pre('save', function(next) {
-  var hash = bcrypt.hashSync(this.password, 10)
-  this.password = hash;
+  if (this.isNew) {
+    var hash = bcrypt.hashSync(this.password, 10)
+    this.password = hash;
+  }
   next();
 })
 

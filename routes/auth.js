@@ -12,7 +12,6 @@ router.post('/login', (req, res, next) => {
   let hashedPass = '';
   let passwordMatch = false;
   let email = req.body.email.toLowerCase();
-
   // Look up the User
   User.findOne({ email }, function(err, user) {
     hashedPass = user.password
@@ -43,7 +42,8 @@ router.post('/signup', (req, res, next) => {
       User.create({
         name: req.body.name,
         email,
-        password: req.body.password
+        password: req.body.password,
+        handicap: 0,
       }, function(err, user) {
         if (err) {
           console.log("GOT AN ERROR CREATING THE USER")
