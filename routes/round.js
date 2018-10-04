@@ -32,22 +32,25 @@ router.post('/', (req, res) => {
       console.log(err)
       res.send(err)
     } else {
-      // console.log('newRound: ', newRound);
       res.json({newRound});
     }
   });
 });
 
-// router.put('/', (req, res) => {
-//   const { courseName, notes, courseId } = req.body;
-//   Course.findById(courseId, (err, course) => {
-//     course.courseName = courseName;
-//     course.notes = notes;
-//     course.save((err, updatedCourse) => {
-//       res.json({updatedCourse});
-//     });
-//   });
-// });
+router.put('/', (req, res) => {
+  const { roundId, course, teebox, date, score, price, notes } = req.body;
+  Round.findById(roundId, (err, round) => {
+    round.courseId = course._id;
+    round.teeboxId = teebox._id;
+    round.date = date;
+    round.score = score;
+    round.price = price;
+    round.notes = notes;
+    round.save((err, updatedRound) => {
+      res.json({updatedRound});
+    });
+  });
+});
 
 router.delete('/', (req, res) => {
   Round.findByIdAndRemove(req.body.id, function(err) {
