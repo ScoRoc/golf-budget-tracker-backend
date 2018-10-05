@@ -3,23 +3,60 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = require('../models/user');
-var Course = require('../models/course');
+// var Course = require('../models/course');
 var Round = require('../models/round');
+
+const quickSort = array => {
+  const lesser = [];
+  const equal = [];
+  const greater = [];
+  if (array.length < 2) {
+    return array;
+  }
+  array.forEach(i =>{
+    let pivot = array[0];
+    if (i < pivot) {
+      lesser.push(i);
+    } else if (i === pivot) {
+      equal.push(i);
+    } else if (i > pivot) {
+      greater.push(i);
+    }
+  });
+  return [...quickSort(lesser),...equal,...quickSort(greater)];
+};
+
+const findLowest20Scores = rounds => {
+  const allScores = quickSort( rounds.map(round => round.score) );
+  const lowest20Scores = [];
+  console.log('allScores sorted: ', allScores);
+  // allScores = quickSort(allScores);
+  // console.log('allScores: ', allScores);
+  // console.log('$ $$$$$ $$$ %%%% rounds: ', rounds);
+  return lowest20Scores;
+}
 
 const calculateHandicap = userId => {
   User.findById(userId, (err, user) => {
-    console.log('user: ', user);
-    user.handicap = 4;
-    user.save((err, updatedUser) => {
-      if (err) console.log(err);
+    Round.find({userId: user._id}, (err, rounds) => {
+      // console.log('rounds: ', rounds);
+      const lowest20Scores = [];
+      // if (rounds.length > 20) {
+        findLowest20Scores(rounds);
+      // } else {
+        // rounds.forEach(round => lowest20Scores.push(round.score));
+      // }
+      // console.log('lowest20Scores: ', lowest20Scores);
+      user.handicap = 4;
+      user.save((err, updatedUser) => {
+        if (err) console.log(err);
+      })
+      // console.log('user.handicap: ', user.handicap);
     })
-    console.log('user.handicap: ', user.handicap);
   });
 }
 
 router.get('/:id', (req, res) => {
-  calculateHandicap(req.params.id);
-  console.log('yooooo');
   Round.find({userId: req.params.id}, function(err, rounds) {
     if (err) {
       console.log(err);
