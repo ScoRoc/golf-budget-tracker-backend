@@ -3,7 +3,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = require('../models/user');
-// var Course = require('../models/course');
+var Teebox = require('../models/teebox');
 var Round = require('../models/round');
 
 const quickSort = array => {
@@ -27,9 +27,13 @@ const quickSort = array => {
 };
 
 const findLowest20Scores = rounds => {
+  // console.log('rounds: ', rounds);
   const allScores = quickSort( rounds.map(round => round.score) );
   const lowest20Scores = [];
-  console.log('allScores sorted: ', allScores);
+  for (let i = 0; i < 20; i++) {
+    lowest20Scores.push(allScores[i]);
+  }
+  // console.log('lowest20Scores: ', lowest20Scores);
   // allScores = quickSort(allScores);
   // console.log('allScores: ', allScores);
   // console.log('$ $$$$$ $$$ %%%% rounds: ', rounds);
@@ -37,23 +41,37 @@ const findLowest20Scores = rounds => {
 }
 
 const calculateHandicap = userId => {
-  User.findById(userId, (err, user) => {
-    Round.find({userId: user._id}, (err, rounds) => {
-      // console.log('rounds: ', rounds);
-      const lowest20Scores = [];
-      // if (rounds.length > 20) {
-        findLowest20Scores(rounds);
-      // } else {
-        // rounds.forEach(round => lowest20Scores.push(round.score));
-      // }
-      // console.log('lowest20Scores: ', lowest20Scores);
-      user.handicap = 4;
-      user.save((err, updatedUser) => {
-        if (err) console.log(err);
-      })
-      // console.log('user.handicap: ', user.handicap);
-    })
+  // User.findById(userId).lean().exec((err, user) => {
+    // Round.find({userId: user._id}).lean().exec((err, rounds) => {
+    //   rounds.forEach(round => {
+    //     Teebox.findById(round.teeboxId).lean().exec((err, teebox) => {
+    //       // round.rating = teebox.rating;
+    //       // round.slope = teebox.slope;
+    //     });
+    //   });
+    //   // console.log('rounds: ', rounds);
+    // });
+  // });
+
+  // User.findById(userId).lean().exec().then(user => {
+  //   Round.find({userId}).lean().exec().then(rounds => {
+  //     rounds.forEach(round => {
+  //       Teebox.findById(round.teeboxId).lean().exec().then(teebox => {
+  //         round.rating = teebox.rating;
+  //         round.slope = teebox.slope;
+  //         // console.log('round: ', round);
+  //       });
+  //     });
+  //     console.log('rounds: ', rounds);
+  //   })
+  // })
+
+  let foo = async User.findById(userId, (err, user) => {
+    return user;
   });
+
+  console.log(foo);
+
 }
 
 router.get('/:id', (req, res) => {
