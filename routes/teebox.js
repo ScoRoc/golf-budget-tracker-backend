@@ -16,12 +16,13 @@ var Teebox = require('../models/teebox');
 // });
 
 router.post('/', (req, res) => {
-  const { name, rating, slope, courseId } = req.body;
+  const { name, rating, slope, courseId, userId } = req.body;
   Teebox.create({
     name,
     rating,
     slope,
-    courseId
+    courseId,
+    userId
   }, function(err, newTeebox) {
     if (err) {
       console.log(err)

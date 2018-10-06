@@ -6,7 +6,7 @@ var User = require('../models/user');
 var Teebox = require('../models/teebox');
 var Round = require('../models/round');
 
-const quickSortRounds = rounds => {
+const quickSortRounds = (rounds, sortBy) => {
   const lesser = [];
   const equal = [];
   const greater = [];
@@ -14,48 +14,54 @@ const quickSortRounds = rounds => {
     return rounds;
   }
   rounds.forEach(round =>{
-    let pivot = rounds[0].score;
-    if (round.score < pivot) {
+    let pivot = rounds[0][sortBy];
+    if (round[sortBy] < pivot) {
       lesser.push(round);
-    } else if (round.score === pivot) {
+    } else if (round[sortBy] === pivot) {
       equal.push(round);
-    } else if (round.score > pivot) {
+    } else if (round[sortBy] > pivot) {
       greater.push(round);
     }
   });
-  return [...quickSortRounds(lesser),...equal,...quickSortRounds(greater)];
+  return [...quickSortRounds(lesser, sortBy), ...equal, ...quickSortRounds(greater, sortBy)];
 };
 
-const findLowest10Scores = rounds => {
-  const sortedRounds = quickSortRounds(rounds);
-  const lowest10Scores = [];
-  for (let i = 0; i < 10; i++) {
-    lowest10Scores.push(sortedRounds[i]);
+const findLowest10Differentials = rounds => {
+  const timeSorted = quickSortRounds(rounds, 'dateTime').reverse();
+  const recent20rounds = [];
+  for (let i = 0; i < 20; i++) {
+    recent20rounds.push(timeSorted[i]);
   }
-  return lowest10Scores;
+  const sortedRounds = quickSortRounds(recent20rounds, 'handicapDifferential');
+  const lowest10Differentials = [];
+  for (let i = 0; i < 10; i++) {
+    lowest10Differentials.push(sortedRounds[i]);
+  }
+  return lowest10Differentials;
 };
 
-async function calculateHandicap(userId) {
+const calculateHandicap = async (userId) => {
   let user = await User.findById(userId).lean( (err, user) => user );
   let rounds = await Round.find({userId: user._id}).lean( (err, rounds) => rounds );
-  let bur = new Date(rounds[0].date);
-  console.log('bur: ', bur);
   await Promise.all(rounds.map(async round => {
+    let roundDate = new Date(round.date);
     const teebox = await Teebox.findById(round.teeboxId).lean( (err, teebox) => teebox );
     round.rating = teebox.rating;
     round.slope = teebox.slope;
+    round.dateTime = roundDate.getTime();
     return round;
   }));
-
-  // if (rounds.length >= 20) {
-    let foo = findLowest10Scores(rounds);
-    // console.log('foo: ', foo);
-
-  // } else {
+  let handicap = null;
+  if (rounds.length >= 20) {
+    let lowest10rounds = findLowest10Differentials(rounds);
+    handicap = Math.floor(lowest10rounds.map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+  } else {
     // doo stuffffff
-  // }
-
-
+  }
+  User.findById(userId, (err, user) => {
+    user.handicap = handicap;
+    user.save();
+  });
 };
 
 router.get('/:id', (req, res) => {

@@ -7,47 +7,27 @@ var Course = require('../models/course');
 var Round = require('../models/round');
 var Teebox = require('../models/teebox');
 
-router.get('/:id', (req, res) => {
-  User.findById(req.params.id).lean().exec(function(err, user) {
-    if (err) {
-      console.log(err);
-      res.send(err);
-    } else {
-      Course.find({userId: req.params.id}).lean().exec(function(err, courses) {
-        if (err) {
-          console.log(err);
-        } else {
-          Teebox.find({}).lean().exec(function(err, teeboxes) {
-            if (err) {
-              console.log(err);
-            } else {
-              Round.find({}).lean().exec(function(err, rounds) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  courses.forEach(course => {
-                    course.teeboxes = [];
-                    course.rounds = [];
-                    teeboxes.forEach(teebox => {
-                      if (teebox.courseId.equals(course._id)) {
-                        course.teeboxes.push(teebox);
-                      }
-                    });
-                    rounds.forEach(round => {
-                      if (round.courseId.equals(course._id)) {
-                        course.rounds.push(round);
-                      }
-                    })
-                  });
-                }
-                res.send({user, courses, rounds});
-              });
-            }
-          });
-        }
-      });
-    }
-  })
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id).lean();
+  const courses = await Course.find({userId: id}).lean();
+  const teeboxes = await Teebox.find({userId: id}).lean();
+  const rounds = await Round.find({userId: id}).lean();
+  courses.forEach(course => {
+    course.teeboxes = [];
+    course.rounds = [];
+    teeboxes.forEach(teebox => {
+      if (teebox.courseId.equals(course._id)) {
+        course.teeboxes.push(teebox);
+      }
+    });
+    rounds.forEach(round => {
+      if (round.courseId.equals(course._id)) {
+        course.rounds.push(round);
+      }
+    })
+  });
+  res.send({user, courses, rounds});
 });
 
 // router.post('/', (req, res) => {

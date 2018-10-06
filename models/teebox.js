@@ -17,6 +17,11 @@ var teeboxSchema = new mongoose.Schema({
   slope: {
     type: Number,
     require: true
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 })
 

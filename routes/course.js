@@ -7,11 +7,12 @@ var Course = require('../models/course');
 var Teebox = require('../models/teebox');
 
 router.get('/:id', (req, res) => {
-  Course.find({userId: req.params.id}).lean().exec(function(err, courses) {
+  const userId = req.params.id;
+  Course.find({userId}).lean().exec(function(err, courses) {
     if (err) {
       console.log(err);
     } else {
-      Teebox.find({}).lean().exec(function(err, teeboxes) {
+      Teebox.find({userId}).lean().exec(function(err, teeboxes) {
         if (err) {
           console.log(err);
         } else {
@@ -44,6 +45,7 @@ router.post('/', (req, res) => {
     } else {
       teeboxes.forEach(teebox => {
         teebox.courseId = newCourse._id;
+        teebox.userId = user._id;
       });
       Teebox.create(teeboxes, function(err, newTeeboxes) {
         if (err) {
