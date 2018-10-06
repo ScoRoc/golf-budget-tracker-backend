@@ -6,73 +6,57 @@ var User = require('../models/user');
 var Teebox = require('../models/teebox');
 var Round = require('../models/round');
 
-const quickSort = array => {
+const quickSortRounds = rounds => {
   const lesser = [];
   const equal = [];
   const greater = [];
-  if (array.length < 2) {
-    return array;
+  if (rounds.length < 2) {
+    return rounds;
   }
-  array.forEach(i =>{
-    let pivot = array[0];
-    if (i < pivot) {
-      lesser.push(i);
-    } else if (i === pivot) {
-      equal.push(i);
-    } else if (i > pivot) {
-      greater.push(i);
+  rounds.forEach(round =>{
+    let pivot = rounds[0].score;
+    if (round.score < pivot) {
+      lesser.push(round);
+    } else if (round.score === pivot) {
+      equal.push(round);
+    } else if (round.score > pivot) {
+      greater.push(round);
     }
   });
-  return [...quickSort(lesser),...equal,...quickSort(greater)];
+  return [...quickSortRounds(lesser),...equal,...quickSortRounds(greater)];
 };
 
-const findLowest20Scores = rounds => {
-  // console.log('rounds: ', rounds);
-  const allScores = quickSort( rounds.map(round => round.score) );
-  const lowest20Scores = [];
-  for (let i = 0; i < 20; i++) {
-    lowest20Scores.push(allScores[i]);
+const findLowest10Scores = rounds => {
+  const sortedRounds = quickSortRounds(rounds);
+  const lowest10Scores = [];
+  for (let i = 0; i < 10; i++) {
+    lowest10Scores.push(sortedRounds[i]);
   }
-  // console.log('lowest20Scores: ', lowest20Scores);
-  // allScores = quickSort(allScores);
-  // console.log('allScores: ', allScores);
-  // console.log('$ $$$$$ $$$ %%%% rounds: ', rounds);
-  return lowest20Scores;
-}
+  return lowest10Scores;
+};
 
-const calculateHandicap = userId => {
-  // User.findById(userId).lean().exec((err, user) => {
-    // Round.find({userId: user._id}).lean().exec((err, rounds) => {
-    //   rounds.forEach(round => {
-    //     Teebox.findById(round.teeboxId).lean().exec((err, teebox) => {
-    //       // round.rating = teebox.rating;
-    //       // round.slope = teebox.slope;
-    //     });
-    //   });
-    //   // console.log('rounds: ', rounds);
-    // });
-  // });
+async function calculateHandicap(userId) {
+  let user = await User.findById(userId).lean( (err, user) => user );
+  let rounds = await Round.find({userId: user._id}).lean( (err, rounds) => rounds );
+  let bur = new Date(rounds[0].date);
+  console.log('bur: ', bur);
+  await Promise.all(rounds.map(async round => {
+    const teebox = await Teebox.findById(round.teeboxId).lean( (err, teebox) => teebox );
+    round.rating = teebox.rating;
+    round.slope = teebox.slope;
+    return round;
+  }));
 
-  // User.findById(userId).lean().exec().then(user => {
-  //   Round.find({userId}).lean().exec().then(rounds => {
-  //     rounds.forEach(round => {
-  //       Teebox.findById(round.teeboxId).lean().exec().then(teebox => {
-  //         round.rating = teebox.rating;
-  //         round.slope = teebox.slope;
-  //         // console.log('round: ', round);
-  //       });
-  //     });
-  //     console.log('rounds: ', rounds);
-  //   })
-  // })
+  // if (rounds.length >= 20) {
+    let foo = findLowest10Scores(rounds);
+    // console.log('foo: ', foo);
 
-  let foo = async User.findById(userId, (err, user) => {
-    return user;
-  });
+  // } else {
+    // doo stuffffff
+  // }
 
-  console.log(foo);
 
-}
+};
 
 router.get('/:id', (req, res) => {
   Round.find({userId: req.params.id}, function(err, rounds) {
@@ -86,23 +70,28 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   const { course, teebox, date, score, price, notes, user } = req.body;
-  Round.create({
-    courseId: course._id,
-    teeboxId: teebox._id,
-    date,
-    score,
-    price,
-    notes,
-    userId: user._id
-  }, function(err, newRound) {
-    if (err) {
-      console.log("GOT AN ERROR CREATING THE COURSE")
-      console.log(err)
-      res.send(err)
-    } else {
-      calculateHandicap(user._id);
-      res.json({newRound});
-    }
+  Teebox.findById(teebox._id).lean().exec((err, oneTeebox) => {
+    let { rating, slope } = oneTeebox;
+    let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
+    Round.create({
+      courseId: course._id,
+      teeboxId: teebox._id,
+      date,
+      score,
+      price,
+      notes,
+      handicapDifferential,
+      userId: user._id
+    }, function(err, newRound) {
+      if (err) {
+        console.log("GOT AN ERROR CREATING THE COURSE")
+        console.log(err)
+        res.send(err)
+      } else {
+        calculateHandicap(user._id);
+        res.json({newRound});
+      }
+    });
   });
 });
 

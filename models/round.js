@@ -26,6 +26,9 @@ var roundSchema = new mongoose.Schema({
     type: String,
     maxLength: 250
   },
+  handicapDifferential: {
+    type: Number
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
