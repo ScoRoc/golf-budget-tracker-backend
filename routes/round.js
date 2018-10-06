@@ -26,18 +26,20 @@ const quickSortRounds = (rounds, sortBy) => {
   return [...quickSortRounds(lesser, sortBy), ...equal, ...quickSortRounds(greater, sortBy)];
 };
 
-const findLowest10Differentials = rounds => {
+const findLowestDifferentials = (rounds, options) => {
   const timeSorted = quickSortRounds(rounds, 'dateTime').reverse();
-  const recent20rounds = [];
-  for (let i = 0; i < 20; i++) {
-    recent20rounds.push(timeSorted[i]);
+  const recentRounds = [];
+  for (let i = 0; i < options.sampleSize; i++) {
+    recentRounds.push(timeSorted[i]);
   }
-  const sortedRounds = quickSortRounds(recent20rounds, 'handicapDifferential');
-  const lowest10Differentials = [];
-  for (let i = 0; i < 10; i++) {
-    lowest10Differentials.push(sortedRounds[i]);
+  console.log('recentRounds.length: ', recentRounds.length);
+  const sortedRounds = quickSortRounds(recentRounds, 'handicapDifferential');
+  const lowestDifferentials = [];
+  for (let i = 0; i < options.roundsToUse; i++) {
+    lowestDifferentials.push(sortedRounds[i]);
   }
-  return lowest10Differentials;
+  console.log('lowestDifferentials: ', lowestDifferentials);
+  return lowestDifferentials;
 };
 
 const calculateHandicap = async (userId) => {
@@ -53,10 +55,68 @@ const calculateHandicap = async (userId) => {
   }));
   let handicap = null;
   if (rounds.length >= 20) {
-    let lowest10rounds = findLowest10Differentials(rounds);
-    handicap = Math.floor(lowest10rounds.map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+    console.log('in 20+');
+    handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: 20, roundsToUse: 10})
+      .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
   } else {
-    // doo stuffffff
+    switch (rounds.length) {
+      case 19:
+      console.log('in 19');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 9})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 18:
+      console.log('in 18');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 8})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 17:
+      console.log('in 17');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 7})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 16:
+      case 15:
+      console.log('in 15, 16');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 6})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 14:
+      case 13:
+      console.log('in 13, 14');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 5})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 12:
+      case 11:
+      case 10:
+      console.log('in 10, 11, 12');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 4})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 9:
+      case 8:
+      case 7:
+      console.log('in 7, 8, 9');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 3})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 6:
+      case 5:
+      case 4:
+      console.log('in 4, 5, 6');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 2})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+        break;
+      case 3:
+      case 2:
+      case 1:
+      console.log('in 1, 2, 3');
+        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 1})
+          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 10);
+          console.log('handicap: ', handicap);
+        break;
+    }
   }
   User.findById(userId, (err, user) => {
     user.handicap = handicap;
