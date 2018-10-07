@@ -43,8 +43,8 @@ const findLowestDifferentials = (rounds, options) => {
 
 const averageDifferential = (roundArray, options) => {
   const { sampleSize, roundsToUse } = options;
-  return Math.floor(findLowestDifferentials(roundArray, {sampleSize, roundsToUse})
-    .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / roundsToUse);
+  return findLowestDifferentials(roundArray, {sampleSize, roundsToUse})
+    .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / roundsToUse;
 }
 
 const calculateHandicap = async (userId) => {
@@ -102,10 +102,12 @@ const calculateHandicap = async (userId) => {
         break;
     }
   }
+  let newHandicap = parseFloat( (handicap * 0.96).toFixed(1) );
   User.findById(userId, (err, user) => {
-    user.handicap = handicap;
+    user.handicap = newHandicap;
     user.save();
   });
+  return newHandicap;
 };
 
 router.get('/:id', (req, res) => {
@@ -118,31 +120,33 @@ router.get('/:id', (req, res) => {
   })
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { course, teebox, date, score, price, notes, user } = req.body;
-  Teebox.findById(teebox._id).lean().exec((err, oneTeebox) => {
-    let { rating, slope } = oneTeebox;
-    let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
-    Round.create({
-      courseId: course._id,
-      teeboxId: teebox._id,
-      date,
-      score,
-      price,
-      notes,
-      handicapDifferential,
-      userId: user._id
-    }, function(err, newRound) {
-      if (err) {
-        console.log("GOT AN ERROR CREATING THE COURSE")
-        console.log(err)
-        res.send(err)
-      } else {
-        calculateHandicap(user._id);
-        res.json({newRound});
-      }
-    });
+  const foundTeebox = await Teebox.findById(teebox._id);
+  let { rating, slope, teeboxHandicap } = foundTeebox;
+  let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
+  Round.create({
+    courseId: course._id,
+    teeboxId: teebox._id,
+    date,
+    score,
+    price,
+    notes,
+    handicapDifferential,
+    userId: user._id
+  }, async (err, newRound) => {
+    if (err) {
+      console.log("GOT AN ERROR CREATING THE COURSE")
+      console.log(err)
+      res.send(err)
+    } else {
+      const handicapIndex = await calculateHandicap(user._id);
+      foundTeebox.teeboxHandicap = Math.round(handicapIndex * slope / 113);
+      foundTeebox.save();
+      res.json({newRound});
+    }
   });
+
 });
 
 router.put('/', (req, res) => {
@@ -154,19 +158,25 @@ router.put('/', (req, res) => {
     round.score = score;
     round.price = price;
     round.notes = notes;
-    round.save((err, updatedRound) => {
-      calculateHandicap(user._id);
+    round.save(async (err, updatedRound) => {
+      const foundTeebox = await Teebox.findById(teebox._id);
+      const handicapIndex = await calculateHandicap(user._id);
+      foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
+      foundTeebox.save();
       res.json({updatedRound});
     });
   });
 });
 
 router.delete('/', (req, res) => {
-  Round.findByIdAndRemove(req.body.id, function(err) {
+  Round.findByIdAndRemove(req.body.id, async function(err) {
     if (err) {
       console.log(err);
     } else {
-      calculateHandicap(req.body.user._id);
+      const foundTeebox = await Teebox.findById(teebox._id);
+      const handicapIndex = await calculateHandicap(user._id);
+      foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
+      foundTeebox.save();
       res.send({msg: 'deleted'});
     }
   });

@@ -18,6 +18,9 @@ var teeboxSchema = new mongoose.Schema({
     type: Number,
     require: true
   },
+  teeboxHandicap: {
+    type: Number
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
