@@ -27,14 +27,15 @@ const quickSortRounds = (rounds, sortBy) => {
 };
 
 const findLowestDifferentials = (rounds, options) => {
+  const { sampleSize, roundsToUse } = options;
   const timeSorted = quickSortRounds(rounds, 'dateTime').reverse();
   const recentRounds = [];
-  for (let i = 0; i < options.sampleSize; i++) {
+  for (let i = 0; i < sampleSize; i++) {
     recentRounds.push(timeSorted[i]);
   }
   const sortedRounds = quickSortRounds(recentRounds, 'handicapDifferential');
   const lowestDifferentials = [];
-  for (let i = 0; i < options.roundsToUse; i++) {
+  for (let i = 0; i < roundsToUse; i++) {
     lowestDifferentials.push(sortedRounds[i]);
   }
   return lowestDifferentials;
@@ -59,56 +60,45 @@ const calculateHandicap = async (userId) => {
   }));
   let handicap = null;
   if (rounds.length >= 20) {
-    console.log('in 20+');
     handicap = averageDifferential(rounds, {sampleSize: 20, roundsToUse: 10});
-    console.log('handicap: ', handicap);
   } else {
     switch (rounds.length) {
       case 19:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 9})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 9);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 9});
         break;
       case 18:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 8})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 8);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 8});
         break;
       case 17:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 7})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 7);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 7});
         break;
       case 16:
       case 15:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 6})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 6);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 6});
         break;
       case 14:
       case 13:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 5})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 5);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 5});
         break;
       case 12:
       case 11:
       case 10:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 4})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 4);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 4});
         break;
       case 9:
       case 8:
       case 7:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 3})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 3);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 3});
         break;
       case 6:
       case 5:
       case 4:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 2})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur) / 2);
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 2});
         break;
       case 3:
       case 2:
       case 1:
-        handicap = Math.floor(findLowestDifferentials(rounds, {sampleSize: rounds.length, roundsToUse: 1})
-          .map(round => round.handicapDifferential).reduce((acc, cur) => acc + cur));
+        handicap = averageDifferential(rounds, {sampleSize: rounds.length, roundsToUse: 1});
         break;
     }
   }
