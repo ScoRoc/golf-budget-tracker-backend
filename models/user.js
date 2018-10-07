@@ -31,11 +31,20 @@ userSchema.set('toJSON', {
     let returnJson = {
       _id: ret._id,
       email: ret.email,
-      name: ret.name
+      name: ret.name,
+      handicap: ret.handicap
     }
     return returnJson
   }
-})
+});
+
+userSchema.set('toObject', {
+  transform: function(doc, ret, options) {  // ret stands for return
+    let returnObject = {...ret};
+    delete returnObject.password
+    return returnObject
+  }
+});
 
 userSchema.methods.authenticated = function(password, cb) {
   bcrypt.compare(password, this.password, function(err, res) {
@@ -53,7 +62,7 @@ userSchema.pre('save', function(next) {
     this.password = hash;
   }
   next();
-})
+});
 
 var User = mongoose.model('User', userSchema);
 
