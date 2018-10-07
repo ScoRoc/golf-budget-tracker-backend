@@ -123,7 +123,7 @@ router.get('/:id', (req, res) => {
 router.post('/', async (req, res) => {
   const { course, teebox, date, score, price, notes, user } = req.body;
   const foundTeebox = await Teebox.findById(teebox._id);
-  let { rating, slope, teeboxHandicap } = foundTeebox;
+  let { rating, slope } = foundTeebox;
   let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
   Round.create({
     courseId: course._id,
@@ -149,8 +149,11 @@ router.post('/', async (req, res) => {
 
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
   const { user, roundId, course, teebox, date, score, price, notes } = req.body;
+  const foundTeebox = await Teebox.findById(teebox._id);
+  let { rating, slope } = foundTeebox;
+  let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
   Round.findById(roundId, (err, round) => {
     round.courseId = course._id;
     round.teeboxId = teebox._id;
@@ -158,6 +161,7 @@ router.put('/', (req, res) => {
     round.score = score;
     round.price = price;
     round.notes = notes;
+    round.handicapDifferential = handicapDifferential;
     round.save(async (err, updatedRound) => {
       const foundTeebox = await Teebox.findById(teebox._id);
       const handicapIndex = await calculateHandicap(user._id);
@@ -169,12 +173,12 @@ router.put('/', (req, res) => {
 });
 
 router.delete('/', (req, res) => {
-  Round.findByIdAndRemove(req.body.id, async function(err) {
+  Round.findByIdAndRemove(req.body.roundId, async function(err) {
     if (err) {
       console.log(err);
     } else {
-      const foundTeebox = await Teebox.findById(teebox._id);
-      const handicapIndex = await calculateHandicap(user._id);
+      const foundTeebox = await Teebox.findById(req.body.teeboxId);
+      const handicapIndex = await calculateHandicap(req.body.user._id);
       foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
       foundTeebox.save();
       res.send({msg: 'deleted'});
