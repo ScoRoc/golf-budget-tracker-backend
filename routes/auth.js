@@ -9,6 +9,10 @@ var expressJWT = require('express-jwt');
 var jwt = require('jsonwebtoken');
 
 router.post('/login', (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    res.send('Please enter your email and password');
+    return;
+  }
   let hashedPass = '';
   let passwordMatch = false;
   let email = req.body.email.toLowerCase();
@@ -34,6 +38,10 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    res.send('Please enter your email and password');
+    return;
+  }
   let email = req.body.email.toLowerCase();
   User.findOne({ email }, function(err, user) {
     if (user) {
