@@ -22,7 +22,7 @@ router.post('/login', (req, res, next) => {
   let email = req.body.email.toLowerCase();
   // Look up the User
   User.findOne({ email }, function(err, user) {
-    hashedPass = user.password
+    if (user) hashedPass = user.password;
     // Compare hashedPass to submitted password
     passwordMatch = bcrypt.compareSync(req.body.password, hashedPass)
     if (passwordMatch) {
@@ -32,10 +32,10 @@ router.post('/login', (req, res, next) => {
       })
       res.json({user, token})
     } else {
-      console.log("Passwords don't match");
+      console.log("Email or password is incorrect");
       res.status(401).json({
-        error: true,
-        message: 'Email or password is incorrect'
+        err: true,
+        msg: 'Email or password is incorrect'
       })
     }
   })
