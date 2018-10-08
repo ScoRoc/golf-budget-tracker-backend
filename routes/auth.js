@@ -10,7 +10,11 @@ var jwt = require('jsonwebtoken');
 
 router.post('/login', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
-    res.send('Please enter your email and password');
+    let err = {
+      msg: 'Please enter your email and password'
+    };
+    console.log(Error(err.msg));
+    res.send({err});
     return;
   }
   let hashedPass = '';
@@ -28,7 +32,7 @@ router.post('/login', (req, res, next) => {
       })
       res.json({user, token})
     } else {
-      console.log("Passwords don't match")
+      console.log("Passwords don't match");
       res.status(401).json({
         error: true,
         message: 'Email or password is incorrect'
@@ -38,8 +42,12 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
-  if (!req.body.email || !req.body.password) {
-    res.send('Please enter your email and password');
+  if (!req.body.email || !req.body.password || !req.body.name) {
+    let err = {
+      msg: 'Please enter your full name, email, and password'
+    };
+    console.log(Error(err.msg));
+    res.send({err});
     return;
   }
   let email = req.body.email.toLowerCase();
