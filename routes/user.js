@@ -47,6 +47,7 @@ router.get('/:id', async (req, res) => {
       round.dateTime = roundDate.getTime();
       if (round.courseId.equals(course._id)) {
         course.rounds.push(round);
+        round.courseName = course.courseName;
       }
     })
   });
