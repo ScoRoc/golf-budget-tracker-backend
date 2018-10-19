@@ -7,7 +7,8 @@ var axios = require('axios');
 
 // Mongoose stuff
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/golf-budget-tracker-backend');  // change db name here
+// mongoose.connect('mongodb://localhost/golf-budget-tracker-backend');  // for local deployment
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});  // for heroku
 
 var app = express();
 
@@ -23,10 +24,10 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.get('/api', function(req, res) {
-//   console.log('hi from the back');
-//   res.send('this is in server.js on backend');
-// });
+app.get('/api', function(req, res) {
+  console.log('hi from the back');
+  res.send('this is in server.js on backend');
+});
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/course', require('./routes/course'));
