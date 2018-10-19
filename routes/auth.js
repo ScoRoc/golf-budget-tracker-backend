@@ -42,6 +42,8 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
+  console.log('POST /signup');
+  console.log('req.body: ', req.body);
   if (!req.body.email || !req.body.password || !req.body.name) {
     let err = {
       msg: 'Please enter your full name, email, and password'
