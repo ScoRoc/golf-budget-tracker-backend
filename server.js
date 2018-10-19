@@ -35,6 +35,10 @@ app.use('/api/round', require('./routes/round'));
 app.use('/api/teebox', require('./routes/teebox'));
 app.use('/api/user', require('./routes/user'));
 
+
+// IN PACKAGE JSON, CHANGE LINE 8 START SCRIPT TO NODEMON WHEN DEPLOYING LOCALLY
+
+
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
