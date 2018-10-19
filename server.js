@@ -8,7 +8,7 @@ var axios = require('axios');
 // Mongoose stuff
 var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost/golf-budget-tracker-backend');  // for local deployment
-mongoose.connect(process.env.MONGODB_URI);  // for heroku
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});  // for heroku
 
 var app = express();
 
