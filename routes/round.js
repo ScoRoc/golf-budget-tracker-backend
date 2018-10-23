@@ -123,6 +123,7 @@ router.get('/:id', (req, res) => {
 router.post('/', async (req, res) => {
   const { course, teebox, date, score, price, notes, user } = req.body;
   const foundTeebox = await Teebox.findById(teebox._id);
+  const usersTeeboxes = await Teebox.find({userId: user._id});
   let { rating, slope } = foundTeebox;
   let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
   Round.create({
@@ -141,8 +142,12 @@ router.post('/', async (req, res) => {
       res.send(err)
     } else {
       const handicapIndex = await calculateHandicap(user._id);
-      foundTeebox.teeboxHandicap = Math.round(handicapIndex * slope / 113);
-      foundTeebox.save();
+      // foundTeebox.teeboxHandicap = Math.round(handicapIndex * slope / 113);
+      // foundTeebox.save();
+      usersTeeboxes.forEach(teebox => {
+        teebox.teeboxHandicap = Math.round(handicapIndex * teebox.slope / 113);
+        teebox.save();
+      });
       res.json({newRound});
     }
   });
