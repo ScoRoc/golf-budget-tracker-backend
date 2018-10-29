@@ -11,7 +11,7 @@ var jwt = require('jsonwebtoken');
 router.post('/login', (req, res, next) => {
   if (!req.body.email || !req.body.password) {
     let err = {
-      msg: 'Please enter your email and password'
+      msg: 'Incorrect email and/or password.'
     };
     console.log(Error(err.msg));
     res.send({err});
@@ -33,9 +33,10 @@ router.post('/login', (req, res, next) => {
       res.json({user, token})
     } else {
       console.log("Email or password is incorrect");
-      res.status(401).json({
-        err: true,
-        msg: 'Email or password is incorrect'
+      res.send({
+        err: {
+          msg: 'Incorrect email and/or password.'
+        }
       })
     }
   })
