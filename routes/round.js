@@ -122,8 +122,9 @@ router.get('/:id', (req, res) => {
 
 router.post('/', async (req, res) => {
   const { course, teebox, date, score, price, notes, user } = req.body;
-  const foundTeebox = await Teebox.findById(teebox._id);
-  const usersTeeboxes = await Teebox.find({userId: user._id});
+  // const foundTeebox = await Teebox.findById(teebox._id);
+  // const usersTeeboxes = await Teebox.find({userId: user._id});
+  const [ foundTeebox, usersTeeboxes ] = await Promise.all([ Teebox.findById(teebox._id), Teebox.find({userId: user._id}) ]);
   let { rating, slope } = foundTeebox;
   let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
   Round.create({
@@ -168,8 +169,9 @@ router.put('/', async (req, res) => {
     round.notes = notes;
     round.handicapDifferential = handicapDifferential;
     round.save(async (err, updatedRound) => {
-      const foundTeebox = await Teebox.findById(teebox._id);
-      const handicapIndex = await calculateHandicap(user._id);
+      // const foundTeebox = await Teebox.findById(teebox._id);
+      // const handicapIndex = await calculateHandicap(user._id);
+      const [ foundTeebox, handicapIndex ] = await Promise.all([ Teebox.findById(teebox._id), calculateHandicap(user._id) ]);
       foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
       foundTeebox.save();
       res.json({updatedRound});
@@ -182,8 +184,9 @@ router.delete('/', (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      const foundTeebox = await Teebox.findById(req.body.teeboxId);
-      const handicapIndex = await calculateHandicap(req.body.user._id);
+      // const foundTeebox = await Teebox.findById(req.body.teeboxId);
+      // const handicapIndex = await calculateHandicap(req.body.user._id);
+      const [ foundTeebox, handicapIndex ] = await Promise.all([ Teebox.findById(req.body.teeboxId), calculateHandicap(req.body.user._id) ]);
       foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
       foundTeebox.save();
       res.send({msg: 'deleted'});

@@ -29,11 +29,17 @@ const quickSortRounds = (rounds, sortBy) => {
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
+  // const user = await User.findById(id);
+  // const courses = await Course.find({userId: id}).lean();
+  // const teeboxes = await Teebox.find({userId: id}).lean();
+  // const rounds = await Round.find({userId: id}).lean();
+  const [ user, courses, teeboxes, rounds ] = await Promise.all([
+    User.findById(id),
+    Course.find({userId: id}).lean(),
+    Teebox.find({userId: id}).lean(),
+    Round.find({userId: id}).lean()
+  ]);
   user.toObject();
-  const courses = await Course.find({userId: id}).lean();
-  const teeboxes = await Teebox.find({userId: id}).lean();
-  const rounds = await Round.find({userId: id}).lean();
   courses.forEach(course => {
     course.teeboxes = [];
     course.rounds = [];
