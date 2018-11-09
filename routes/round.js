@@ -10,6 +10,7 @@ router.get('/foo', (req, res) => {
   Round.find({}, (err, rounds) => {
     rounds.forEach(round => {
       round.teamScore = false;
+      console.log(round);
       round.save();
       res.send('cool');
     })
