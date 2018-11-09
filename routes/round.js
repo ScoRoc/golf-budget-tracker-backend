@@ -12,8 +12,8 @@ router.get('/foo', (req, res) => {
       round.teamScore = false;
       console.log(round);
       round.save();
-      res.send('cool');
     })
+    res.send('cool');
   })
 })
 
