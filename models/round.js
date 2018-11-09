@@ -16,11 +16,15 @@ var roundSchema = new mongoose.Schema({
   },
   score: {
     type: Number,
-    require: true
+    required: true
+  },
+  teamScore: {
+    type: Boolean,
+    required: true
   },
   price: {
     type: Number,
-    require: true
+    required: true
   },
   notes: {
     type: String,

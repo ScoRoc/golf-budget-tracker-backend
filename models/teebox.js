@@ -12,11 +12,11 @@ var teeboxSchema = new mongoose.Schema({
   },
   rating: {
     type: Number,
-    require: true
+    required: true
   },
   slope: {
     type: Number,
-    require: true
+    required: true
   },
   teeboxHandicap: {
     type: Number
