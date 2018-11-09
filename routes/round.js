@@ -49,7 +49,8 @@ const averageDifferential = (roundArray, options) => {
 
 const calculateHandicap = async (userId) => {
   let user = await User.findById(userId).lean( (err, user) => user );
-  let rounds = await Round.find({userId: user._id}).lean( (err, rounds) => rounds );
+  let allRounds = await Round.find({userId: user._id}).lean( (err, rounds) => rounds);
+  let rounds = allRounds.filter(round => !round.teamScore);
   await Promise.all(rounds.map(async round => {
     let roundDate = new Date(round.date);
     const teebox = await Teebox.findById(round.teeboxId).lean( (err, teebox) => teebox );
@@ -121,7 +122,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { course, teebox, date, score, price, notes, user } = req.body;
+  const { course, teebox, date, score, teamScore, price, notes, user } = req.body;
   // const foundTeebox = await Teebox.findById(teebox._id);
   // const usersTeeboxes = await Teebox.find({userId: user._id});
   const [ foundTeebox, usersTeeboxes ] = await Promise.all([ Teebox.findById(teebox._id), Teebox.find({userId: user._id}) ]);
@@ -132,6 +133,7 @@ router.post('/', async (req, res) => {
     teeboxId: teebox._id,
     date,
     score,
+    teamScore,
     price,
     notes,
     handicapDifferential,
@@ -156,26 +158,24 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  const { user, roundId, course, teebox, date, score, price, notes } = req.body;
+  const { user, roundId, course, teebox, date, score, teamScore, price, notes } = req.body;
   const foundTeebox = await Teebox.findById(teebox._id);
   let { rating, slope } = foundTeebox;
   let handicapDifferential = parseFloat( ((score - rating) * 113 / slope).toFixed(1) );
-  Round.findById(roundId, (err, round) => {
-    round.courseId = course._id;
-    round.teeboxId = teebox._id;
-    round.date = date;
-    round.score = score;
-    round.price = price;
-    round.notes = notes;
-    round.handicapDifferential = handicapDifferential;
-    round.save(async (err, updatedRound) => {
-      // const foundTeebox = await Teebox.findById(teebox._id);
-      // const handicapIndex = await calculateHandicap(user._id);
-      const [ foundTeebox, handicapIndex ] = await Promise.all([ Teebox.findById(teebox._id), calculateHandicap(user._id) ]);
-      foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
-      foundTeebox.save();
-      res.json({updatedRound});
-    });
+  Round.findOneAndUpdate({_id: roundId}, {$set:{
+    courseId: course._id,
+    teeboxId: teebox._id,
+    date: date,
+    score: score,
+    teamScore: teamScore,
+    price: price,
+    notes: notes,
+    handicapDifferential: handicapDifferential
+  }}, {new: true}, async (err, updatedRound) => {
+    const [ foundTeebox, handicapIndex ] = await Promise.all([ Teebox.findById(teebox._id), calculateHandicap(user._id) ]);
+    foundTeebox.teeboxHandicap = Math.round(handicapIndex * foundTeebox.slope / 113);
+    foundTeebox.save();
+    res.json({updatedRound});
   });
 });
 
