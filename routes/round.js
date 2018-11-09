@@ -154,7 +154,6 @@ router.post('/', async (req, res) => {
       res.json({newRound});
     }
   });
-
 });
 
 router.put('/', async (req, res) => {
