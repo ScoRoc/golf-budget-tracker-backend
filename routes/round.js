@@ -6,17 +6,6 @@ var User = require('../models/user');
 var Teebox = require('../models/teebox');
 var Round = require('../models/round');
 
-router.get('/foo', (req, res) => {
-  Round.find({}, (err, rounds) => {
-    rounds.forEach(round => {
-      round.teamScore = false;
-      console.log(round);
-      round.save();
-    })
-    res.send('cool');
-  })
-})
-
 const quickSortRounds = (rounds, sortBy) => {
   const lesser = [];
   const equal = [];
