@@ -1,0 +1,52 @@
+$darkGrey: #333;
+$darkGreyTrans: rgba(51, 51, 51, .4);
+$darkMediumGrey: #555;
+$darkRed: #670808;
+$darkOffWhite: #dbd3c0;
+$darkOffWhiteTrans: rgba(219, 211, 192, 0.7);
+$darkSeafoam: #1F5942;
+$lightBlue: #3cb2ec;
+$lightBlueDark: #007dbb;
+$lightOrange: #e39403;
+$lightPurple: #9a5cff;
+$mauve: #996f92;
+$mediumGrey: #999;
+$offWhite: #fff9eb;
+$offWhiteTrans: rgba(251, 248, 231, .4);
+$orange: #e36313;
+$purple: #8046c4;
+$redGrey: #692e23;
+$seafoam: #21c786;
+$steelBlue: #50849d;
+$yellow: #cbc607;
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  height: 30vh;
+  width: 100vw;
+  background-image: url('/img/mailbox.jpeg');
+  // background-image:
+  //  linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+}
+
+h1  {
+  color: $lightOrange;
+  box-shadow: 5px #888888;
+  margin-left: 3em;
+}
+
+p {
+  margin: 4em 0 0 3em;
+}
+
+span {
+  font-style: italic;
+}
