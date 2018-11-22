@@ -20,27 +20,39 @@ $seafoam: #21c786;
 $steelBlue: #50849d;
 $yellow: #cbc607;
 
+
+//#D6C6BD tan color
+//#383838 dark brown
+//offwhite #F8F8F8;
+//darker off white #F5F5F5;
+//white white #FFFFFF;
+//teal #7CBBC4;
+
+
 * {
   box-sizing: border-box;
 }
 
-html, body {
+html, body, p, h1 {
   margin: 0;
   padding: 0;
 }
 
 header {
+  display: flex;
+  flex-direction: row-reverse;
   height: 30vh;
   width: 100vw;
-  background-image: url('/img/mailbox.jpeg');
-  // background-image:
-  //  linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-}
+  background: $darkOffWhiteTrans;
 
-h1  {
-  color: $lightOrange;
-  box-shadow: 5px #888888;
-  margin-left: 3em;
+  h1 {
+    color: $lightOrange;
+    margin: 1em 1em 2em 0;
+  }
+
+  h1, p {
+    align-items: center;
+  }
 }
 
 p {
@@ -49,4 +61,33 @@ p {
 
 span {
   font-style: italic;
+}
+
+main {
+  height: 55vh;
+  width: 100vw;
+}
+
+form {
+  font-size: 24px;
+  background: #F5F5F5;
+  height: 150px;
+  width: 1180px;
+}
+
+footer {
+  height: 15vh;
+  width: 100vw;
+}
+
+.page-divider {
+  height: 5vh;
+  width: 100vw;
+  background: #383838;
+}
+
+.p-tag {
+  color: $offWhite;
+  margin: 0;
+  padding-top: .5em;
 }
