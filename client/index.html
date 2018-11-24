@@ -2,36 +2,49 @@
 <html lang='en' dir='ltr'>
   <head>
     <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Golf Tracker</title>
     <link rel='stylesheet' href='style.min.css'>
   </head>
   <body>
+
     <header>
-      <div class='app-name-wrapper'>
-        <h1 class='app-name'>My Golf Tracker</h1>
-      </div>
-      <div class='header-p-tags'>
-        <p>Contact Us</p>
-        <p>I would love to hear from you.</p>
+      <h1>My Golf Tracker</h1>
+      <div class='header-text'>
+        <p>Contact me below. I'd love to hear from you.</p>
       </div>
     </header>
+
     <main>
 
-      <div class='page-divider'><p class='p-tag'>Thank you for using
-        <span>My Golf Tracker</span> app. If you have any
-        questions feel free to contact me using the form below. </p>
-      </div>
-      <div class='contact-form'>
-        <form action="https://formspree.io/your@email.com" method="POST">
-          <input type="text" name="name">
-          <input type="email" name="_replyto">
-          <input type="submit" value="Send">
-        </form>
-      </div>
+      <section>
+        <p class='p-tag'>Thank you for using
+          <span class='italic bold'>My Golf Tracker</span>. If you have any
+          questions, comments, or feature requests, please contact me using the form below.
+        </p>
+      </section>
 
+      <form id='form' action='https://formspree.io/scrosehart@gmail.com' method="POST">
+
+        <label>Your name
+          <input type='text' name='name' placeholder='full name'>
+        </label>
+
+        <label>Your email
+          <input type'email' name='email' placeholder='email'>
+        </label>
+
+        <label>Your message
+          <textarea form='form' rows='4' name='message' placeholder='message'></textarea>
+        </label>
+
+        <input class='btn' type='submit' value='Send'>
+
+      </form>
     </main>
+
     <footer>
-      <p>footer</p>
+      <p>&copy; 2018 My Golf Tracker</p>
     </footer>
 
   </body>
