@@ -24,7 +24,8 @@ var roundSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    // required: true
+    required: false
   },
   notes: {
     type: String,
