@@ -123,6 +123,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', async (req, res) => {
   const { course, teebox, date, score, teamScore, price, notes, user } = req.body;
+  if (score === null) throw new Error('The score cannot be emtpy');
   // const foundTeebox = await Teebox.findById(teebox._id);
   // const usersTeeboxes = await Teebox.find({userId: user._id});
   const [ foundTeebox, usersTeeboxes ] = await Promise.all([ Teebox.findById(teebox._id), Teebox.find({userId: user._id}) ]);
