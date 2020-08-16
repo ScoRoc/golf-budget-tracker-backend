@@ -8,7 +8,8 @@ var axios = require('axios');
 // Mongoose stuff
 var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost/golf-budget-tracker-backend');  // for local deployment
-mongoose.connect(process.env.MONGODB_URI);  // for heroku
+// mongoose.connect(process.env.MONGODB_URI);  // for heroku OLD using mLab
+mongoose.connect(process.env.MONGO_ATLAS_URI); // for heroku NEW using Mongo ATlas
 
 var app = express();
 
@@ -30,8 +31,7 @@ app.get('/support', (req, res, next) => {
 
 // IN PACKAGE JSON, CHANGE LINE 8 START SCRIPT TO NODEMON WHEN DEPLOYING LOCALLY
 
-
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
 });
