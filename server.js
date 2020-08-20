@@ -15,18 +15,18 @@ var mongoose = require('mongoose');
 // }); // for heroku NEW using Mongo Atlas
 
 // mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
-// mongoose.connect(process.env.MONGO_ATLAS_URI);
+mongoose.connect(process.env.MONGO_ATLAS_URI);
 
 // ~~~~ WORKING ~~~~
-const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(process.env.MONGO_ATLAS_URI, {
-  useNewUrlParser: true,
-});
-client.connect(err => {
-  const collection = client.db('test').collection('devices');
-  // perform actions on the collection object
-  client.close();
-});
+// const MongoClient = require('mongodb').MongoClient;
+// const client = new MongoClient(process.env.MONGO_ATLAS_URI, {
+//   useNewUrlParser: true,
+// });
+// client.connect(err => {
+//   const collection = client.db('test').collection('devices');
+//   // perform actions on the collection object
+//   client.close();
+// });
 
 var app = express();
 
