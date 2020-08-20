@@ -14,8 +14,9 @@ var mongoose = require('mongoose');
 //   useCreateIndex: true,
 // }); // for heroku NEW using Mongo ATlas
 
-mongoose.connect(process.env.MONGO_ATLAS_URI);
+mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
 
+// ~~~~ WORKING ~~~~
 // const MongoClient = require('mongodb').MongoClient;
 // const uri =
 //   'mongodb+srv://heroku_nxw7hcq0:6ubst35dt162gqnjab0rfao9r2@my-golf-tracker-prod-01.w059u.mongodb.net/heroku_nxw7hcq0?retryWrites=true&w=majority';
