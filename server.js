@@ -15,18 +15,18 @@ var mongoose = require('mongoose');
 // }); // for heroku NEW using Mongo Atlas
 
 // mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
-mongoose.connect(process.env.MONGO_ATLAS_URI);
+// mongoose.connect(process.env.MONGO_ATLAS_URI);
 
 // ~~~~ WORKING ~~~~
-// const MongoClient = require('mongodb').MongoClient;
-// const uri =
-//   'mongodb+srv://heroku_nxw7hcq0:6ubst35dt162gqnjab0rfao9r2@my-golf-tracker-prod-01.w059u.mongodb.net/heroku_nxw7hcq0?retryWrites=true&w=majority';
-// const client = new MongoClient(uri, { useNewUrlParser: true });
-// client.connect(err => {
-//   const collection = client.db('test').collection('devices');
-//   // perform actions on the collection object
-//   client.close();
-// });
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient(urprocess.env.MONGO_ATLAS_URIi, {
+  useNewUrlParser: true,
+});
+client.connect(err => {
+  const collection = client.db('test').collection('devices');
+  // perform actions on the collection object
+  client.close();
+});
 
 var app = express();
 
