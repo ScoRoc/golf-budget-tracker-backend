@@ -13,7 +13,15 @@ var mongoose = require('mongoose');
 //   useNewUrlParser: true,
 //   useCreateIndex: true,
 // }); // for heroku NEW using Mongo ATlas
-mongoose.connect(process.env.MONGO_ATLAS_URI); // for heroku NEW using Mongo ATlas
+const MongoClient = require('mongodb').MongoClient;
+const uri =
+  'mongodb+srv://heroku_nxw7hcq0:<password>@my-golf-tracker-prod-01.w059u.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db('test').collection('devices');
+  // perform actions on the collection object
+  client.close();
+});
 
 var app = express();
 
