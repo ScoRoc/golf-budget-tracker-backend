@@ -12,9 +12,10 @@ var mongoose = require('mongoose');
 // mongoose.connect(process.env.MONGO_ATLAS_URI, {
 //   useNewUrlParser: true,
 //   useCreateIndex: true,
-// }); // for heroku NEW using Mongo ATlas
+// }); // for heroku NEW using Mongo Atlas
 
-mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
+// mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
+mongoose.connect(process.env.MONGO_ATLAS_URI);
 
 // ~~~~ WORKING ~~~~
 // const MongoClient = require('mongodb').MongoClient;
