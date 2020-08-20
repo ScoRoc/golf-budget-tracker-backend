@@ -11,7 +11,6 @@ var mongoose = require('mongoose');
 // mongoose.connect(process.env.MONGODB_URI);  // for heroku OLD using mLab
 mongoose.connect(process.env.MONGO_ATLAS_URI, {
   useNewUrlParser: true,
-  useCreateIndex: true,
 }); // for heroku NEW using Mongo ATlas
 
 var app = express();
