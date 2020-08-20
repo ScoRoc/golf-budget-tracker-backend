@@ -19,7 +19,7 @@ var mongoose = require('mongoose');
 
 // ~~~~ WORKING ~~~~
 const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(urprocess.env.MONGO_ATLAS_URIi, {
+const client = new MongoClient(process.env.MONGO_ATLAS_URI, {
   useNewUrlParser: true,
 });
 client.connect(err => {
