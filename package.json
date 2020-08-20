@@ -2,7 +2,7 @@
   "name": "mern-jwt-auth",
   "version": "1.0.0",
   "engines": {
-    "node": "8.9.4"
+    "node": "13"
   },
   "description": "",
   "main": "server.js",
