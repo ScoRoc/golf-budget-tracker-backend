@@ -8,25 +8,10 @@ var axios = require('axios');
 // Mongoose stuff
 var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost/golf-budget-tracker-backend');  // for local deployment
-// mongoose.connect(process.env.MONGODB_URI);  // for heroku OLD using mLab
-// mongoose.connect(process.env.MONGO_ATLAS_URI, {
-//   useNewUrlParser: true,
-//   useCreateIndex: true,
-// }); // for heroku NEW using Mongo Atlas
-
-// mongoose.connect(process.env.MONGO_ATLAS_URI, { auth: { authdb: 'admin' } });
-mongoose.connect(process.env.MONGO_ATLAS_URI);
-
-// ~~~~ WORKING ~~~~
-// const MongoClient = require('mongodb').MongoClient;
-// const client = new MongoClient(process.env.MONGO_ATLAS_URI, {
-//   useNewUrlParser: true,
-// });
-// client.connect(err => {
-//   const collection = client.db('test').collection('devices');
-//   // perform actions on the collection object
-//   client.close();
-// });
+mongoose.connect(process.env.MONGO_ATLAS_URI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+}); // for heroku NEW using Mongo Atlas
 
 var app = express();
 
